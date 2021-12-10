@@ -1,0 +1,9 @@
+*~
+\#*
+.\#*
+*.pyc
+.~lock.*\#
+.idea
+build
+dist
+pytarock/data/version.json
