@@ -1,1 +1,305 @@
-jstarock.html
+<!DOCTYPE html>
+<html lang="de" xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>Tarock</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="css/normalize.css">
+    <link rel="stylesheet" type="text/css" href="css/tarock.css">
+    <link rel="stylesheet" type="text/css" href="css/cards.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="js/jquery-3.6.0.min.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/lang.js"></script>
+    <script src="js/mycards.js"></script>
+    <script src="js/tarock.js"></script>
+    <script src="js/random_names.js"></script>
+</head>
+<body>
+
+<nav class="navbar navbar-light bg-light justify-content-between">
+    <div class="header">
+    Tarock
+    </div>
+
+    <div class="flex-row d-flex align-items-center">
+        <div class="header">
+            <my-translate msg="Room">Room</my-translate>:&nbsp;<span id="roomname"><a href="" id="roomname_a"></a></span>
+        </div>
+        <button class="btn btn-outline-success" id="copyURL" onclick="copyURLToClipboard()"><my-translate msg="Copy Link">Copy Link</my-translate></button>
+    </div>
+
+
+    <div id="set_name_container">
+
+         <div class="dropdown pe-2 d-flex">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+            <my-translate msg="this_language">English</my-translate>
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+            <li class="lang"><a class="dropdown-item" onclick="t.set_language('en')">English</a></li>
+            <li class="lang"><a class="dropdown-item" onclick="t.set_language('de')">Deutsch</a></li>
+          </ul>
+         </div>
+        <div class="pe-2">
+            <input class="form-control" placeholder="Mein Name" aria-label="Name" id="name">
+        </div>
+        <button class="btn btn-outline-success" id="setName"><my-translate msg="Set Name">Set Name</my-translate></button>
+    </div>
+
+
+</nav>
+
+<div class="container-fluid">
+    <div id='card-table' class="card-table gametable">
+        <div class="position-relative w-100 h-100">
+            <div class="errmsg_box position-absolute p-3" id="errmsg_box">
+            </div>
+            <div id="gametable">
+                <div id="gametype_info" class="position-absolute p-3" hidden>
+                    <span><my-translate msg="Game Type">Game Type</my-translate>: </span><span id="gametype"></span>
+                    <div>
+                        <button class="btn btn-warning m-3" id="autoplayButton" hidden><my-translate msg="Autoplay">Autoplay</my-translate></button>
+                        <button class="btn btn-warning m-3" id="finishgameButton"><my-translate msg="End Game">End Game</my-translate></button>
+                    </div>
+                </div>
+                <div id="gametypebox" class="position-absolute p-3" hidden>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="gametype" id="positive"
+                               value="positive" checked>
+                        <label class="form-check-label" for="positive">
+                            <my-translate msg="Positive Game">Positive Game</my-translate>
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="gametype" id="negative"
+                               value="negative">
+                        <label class="form-check-label" for="negative">
+                            <my-translate msg="Negative Game">Negative Game</my-translate>
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="gametype" id="colorgame"
+                               value="colorgame">
+                        <label class="form-check-label" for="colorgame">
+                            <my-translate msg="Colorgame">Colorgame</my-translate>
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="gametype" id="sechserdreier"
+                               value="sechserdreier">
+                        <label class="form-check-label" for="sechserdreier">
+                            <my-translate msg="Take all 6">Take all 6</my-translate>
+                        </label>
+                    </div>
+                    <div class="form-check pt-3">
+                        <input class="form-check-input" type="checkbox" value="" id="ouvert">
+                        <label class="form-check-label" for="ouvert">
+                            <my-translate msg="Ouvert">Ouvert</my-translate>
+                        </label>
+                    </div>
+                    <button class="btn btn-warning m-3" id="gametypeConfirm"><my-translate msg="Start Game">Start Game</my-translate></button>
+                </div>
+
+
+                <div id="played_0" class="position-absolute cardcollection"></div>
+
+                <div id="playername2" class="name_and_cards">
+                    <div class="innerplayername">
+                        <div class="innerplayername2">
+                            <span id="turn2" class="hide">
+                                <span class="turn">
+                                    <span class="turn-animate">
+                                        👉
+                                    </span>
+                                </span>
+                            </span>
+                            <span id="name2"  class="playername">
+                                <my-translate msg="[not connected]">[not connected]</my-translate>
+                            </span>
+                            <span class="stichcounter" hidden>&nbsp;(<span id="stiche_2">0</span>)</span>
+                        </div>
+                    </div>
+                    <div id="playerhand_2" class="postcollection"></div>
+                </div>
+
+
+
+
+                <div id="player_1" class="player1">
+                    <span class="center_card_container">
+                        <span id="talon_b" class="cardcollection"></span>
+                        <span id="played_1" class="cardcollection"></span>
+                    </span>
+                    <div class="name_and_cards">
+                        <span id="playername1" class="text-nowrap">
+                            <span id="turn1" class="hide">
+                                <span class="turn">
+                                    <span class="turn-animate">
+                                        👉
+                                    </span>
+                                </span>
+                            </span>
+                            <span id="name1" class="playername">
+                                <my-translate msg="[not connected]">[not connected]</my-translate>
+                            </span>
+                            <span class="stichcounter" hidden>&nbsp;(<span id="stiche_1">0</span>)</span>
+                        </span>
+                        <div id="playerhand_1" class="postcollection"></div>
+                    </div>
+                </div>
+
+
+                <div id="player_2" class="position-absolute">
+                    <div id="played_2" class="cardcollection"></div>
+                </div>
+
+
+                <div id="player_3" class="player3">
+                    <div class="name_and_cards">
+                        <span class="text-nowrap">
+                            <span id="playername3" class="pe-3">
+                                <span id="turn3" class="hide">
+                                    <span class="turn">
+                                        <span class="turn-animate">
+                                            👉
+                                        </span>
+                                    </span>
+                                </span>
+                                <span id="name3" class="playername">
+                                    <my-translate msg="[not connected]">[not connected]</my-translate>
+                                </span>
+                                <span class="stichcounter" hidden>&nbsp;(<span id="stiche_3">0</span>)</span>
+                            </span>
+                        </span>
+                        <div id="playerhand_3" class="postcollection"></div>
+                    </div>
+                    <span class="center_card_container">
+                        <span id="talon_a" class="cardcollection"></span>
+                        <div id="played_3" class="cardcollection"></div>
+                    </span>
+
+                </div>
+
+                <div id="hand_cards" class="">
+                    <div id="player_0" class="cardcollection"></div>
+                    <div id="playername0" class="playername0 text-nowrap">
+                        <span id="turn0" class="hide">
+                            <span class="turn">
+                                <span class="turn-animate">
+                                    👉
+                                </span>
+                            </span>
+                        </span>
+                        <span id="name0"  class="playername">
+                            <my-translate msg="Me">Me</my-translate>
+                        </span>
+                            <span class="stichcounter" hidden>&nbsp;(<span id="stiche_0">0</span>)</span>
+                    </div>
+                </div>
+                <div id="my_taken_cards" class="position-absolute p-2 d-flex align-items-center">
+                    <div id="taken_0" class="postcollections"></div>
+                </div>
+            </div>
+
+
+            <div id="postgame" hidden>
+                <div class="postgamename" id="p_name0"></div>
+                <div id="post_0" class="postcollections ps-2">
+
+                </div>
+
+                <div class="postgamename" id="p_name1"></div>
+                <div id="post_1" class="postcollections ps-2">
+
+                </div>
+
+                <div class="postgamename" id="p_name2"></div>
+                <div id="post_2" class="postcollections ps-2">
+
+                </div>
+
+                <div class="postgamename" id="p_name3"></div>
+                <div id="post_3" class="postcollections ps-2">
+                </div>
+
+                <div class="postgamename" id="talon1_name">Talon</div>
+                <div id="post_4" class="postcollections ps-2">
+                    <div id="post_talon_a" class="postcollection posttalon"></div>
+                    <div id="post_talon_b" class="postcollection posttalon"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div id="postgame2" hidden>
+        <div>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col"><my-translate msg="Group">Group</my-translate></th>
+                    <th scope="col" id="p2_name0"></th>
+                    <th scope="col" id="p2_name1"></th>
+                    <th scope="col" id="p2_name2"></th>
+                    <th scope="col" id="p2_name3"></th>
+                    <th scope="col"><my-translate msg="Talon A">Talon A</my-translate></th>
+                    <th scope="col"><my-translate msg="Talon B">Talon B</my-translate></th>
+                    <th scope="col"><my-translate msg="Points">Points</my-translate></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th scope="row">A</th>
+                    <td><input class="form-check-input" type="radio" name="points_0" id="points_0_A"
+                               value="A" checked></td>
+                    <td><input class="form-check-input" type="radio" name="points_1" id="points_1_A"
+                               value="A" checked></td>
+                    <td><input class="form-check-input" type="radio" name="points_2" id="points_2_A"
+                               value="A" checked></td>
+                    <td><input class="form-check-input" type="radio" name="points_3" id="points_3_A"
+                               value="A" checked></td>
+                    <td><input class="form-check-input" type="radio" name="points_4" id="points_4_A"
+                               value="A" checked></td>
+                    <td><input class="form-check-input" type="radio" name="points_5" id="points_5_A"
+                               value="A" checked></td>
+                    <td id="points_group_0"></td>
+                </tr>
+                <tr>
+                    <th scope="row">B</th>
+                    <td><input class="form-check-input" type="radio" name="points_0" id="points_0_B"
+                               value="B"></td>
+                    <td><input class="form-check-input" type="radio" name="points_1" id="points_1_B"
+                               value="B"></td>
+                    <td><input class="form-check-input" type="radio" name="points_2" id="points_2_B"
+                               value="B"></td>
+                    <td><input class="form-check-input" type="radio" name="points_3" id="points_3_B"
+                               value="B"></td>
+                    <td><input class="form-check-input" type="radio" name="points_4" id="points_4_B"
+                               value="B"></td>
+                    <td><input class="form-check-input" type="radio" name="points_5" id="points_5_B"
+                               value="B"></td>
+                    <td id="points_group_1"></td>
+                </tr>
+                <tr>
+                    <th scope="row"><my-translate msg="Total">Total</my-translate></th>
+                    <td id="points_0"></td>
+                    <td id="points_1"></td>
+                    <td id="points_2"></td>
+                    <td id="points_3"></td>
+                    <td id="points_4"></td>
+                    <td id="points_5"></td>
+                    <td></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="p-4">
+            <button class="btn btn-warning" id="newGame"><my-translate msg="New Game">New Game</my-translate></button>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>
