@@ -24,13 +24,13 @@ os: linux
 #   may cause associated deployments to fail.
 files:
   - source: TarockWSServer.py
-    destination: /opt/pytarock/TarockWSServer.py
+    destination: /opt/pytarock
   - source: requirements.txt
-    destination: /opt/pytarock/requirements.txt
+    destination: /opt/pytarock
   - source: tarockgame
     destination: /opt/pytarock/tarockgame
   - source: ec2/pytarock.service
-    destination: /etc/systemd/system/pytarock.service
+    destination: /etc/systemd/system
 # For deployments to Amazon Linux, Ubuntu Server, or RHEL instances,
 #   you can specify a "permissions" 
 #   section here that describes special permissions to apply to the files 
