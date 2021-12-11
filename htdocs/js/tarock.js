@@ -376,6 +376,10 @@ class CardManager {
         }
         this.stage = stage;
 
+        if (stage === 'pregame') {
+            window.scrollTo(0, 0)
+        }
+
         document.getElementById('gametypebox').hidden = !(stage === 'pregame' && this.primary === 0);
         document.getElementById('gametype_info').hidden = (stage === 'pregame');
 
