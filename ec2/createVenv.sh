@@ -1,4 +1,4 @@
-#!\bin\bash
+#!/bin/bash
 
 rm -rf /opt/venv
 python -m venv /opt/venv || exit 1
