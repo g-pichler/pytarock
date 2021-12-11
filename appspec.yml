@@ -114,7 +114,8 @@ hooks:
 #      runas:
 # During the ApplicationStart deployment lifecycle event, run the commands 
 #   in the script specified in "location".
-  ApplicationStart: ec2/startPytarock.sh
+  ApplicationStart:
+    - location: ec2/startPytarock.sh
       timeout: 600
 #      runas:
 #    - location: 
