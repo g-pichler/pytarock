@@ -440,7 +440,7 @@ document.addEventListener("DOMContentLoaded", async function (event) {
         url = "ws://" + location.hostname + ":31426/tarockws/" + table
     }
     else {
-        url = "wss://" + location.hostname + "/tarockws/" + table
+        url = "wss://" + location.hostname.replace("www", "ws") + "/tarockws/" + table
     }
     var websocket = new WebSocket(url);
     var roomname_a = document.getElementById('roomname_a');
