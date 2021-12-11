@@ -1,0 +1,12 @@
+[Unit]
+Description=PyTarock Server
+
+[Service]
+Type=simple
+ExecStartPre=git pull
+ExecStart=/opt/venv/bin/python3 TarockWSServer.py localhost 31427
+WorkingDirectory=/opt/pytarock
+User=pytarock
+
+[Install]
+WantedBy=multi-user.target
