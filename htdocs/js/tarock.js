@@ -439,13 +439,21 @@ document.addEventListener("DOMContentLoaded", async function (event) {
         window.location.search = '?' + makeid(6)
         return;
     }
+
+    // Figure out the correct URI for the WebSocket connection
     let url = null;
+    let ws_hostname = location.hostname;
+    let proto = "wss://"
+    let port = ""
     if (location.hostname === 'localhost') {
-        url = "ws://" + location.hostname + ":31426/tarockws/" + table
+        proto = "ws://"
+        port = ":31426"
     }
-    else {
-        url = "wss://" + location.hostname.replace("www", "ws") + "/tarockws/" + table
+    else if (location.hostname === 'www.tarock.link') {
+        ws_hostname = "ws.tarock.link"
     }
+    url = proto + ws_hostname + port + "/tarockws/" + table
+
     var websocket = new WebSocket(url);
     var roomname_a = document.getElementById('roomname_a');
     roomname_a.textContent = table
