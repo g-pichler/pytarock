@@ -9,6 +9,7 @@ import json
 from typing import Optional, Dict
 from tarockgame.game import GameType, Game, IllegalPlay, GameStage, Suit, Card
 from collections import defaultdict, deque
+from random import choice
 
 logger = logging.getLogger(__name__)
 
@@ -50,7 +51,7 @@ class Table:
         player.data = dict()
         if len(self) >= 4:
             raise IllegalPlay('This table is already full.')
-        i = self.players.index(None)
+        i = choice([idx for idx in range(4) if self.players[idx] is None])
         self.players[i] = player
         player.data['table'] = self
         player.data['name'] = f'Spieler {i+1}'

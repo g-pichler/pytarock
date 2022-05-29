@@ -8,8 +8,8 @@ from typing import Set, Iterable, List
 
 class Suit(Enum):
     HEARTS = 1
-    DIAMONDS = 2
-    CLUBS = 3
+    CLUBS = 2
+    DIAMONDS = 3
     SPADES = 4
     TAROCK = 5
 
