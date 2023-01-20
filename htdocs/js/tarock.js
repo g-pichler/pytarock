@@ -450,7 +450,7 @@ document.addEventListener("DOMContentLoaded", async function (event) {
         port = ":31426"
     }
     else if (location.hostname === 'www.tarock.link') {
-        ws_hostname = "ws.tarock.link"
+        ws_hostname = "ws1.tarock.link"
     }
     url = proto + ws_hostname + port + "/tarockws/" + table
 
