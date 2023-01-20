@@ -1,6 +1,4 @@
-# syntax=docker/dockerfile:1
-
-FROM python:lastest
+FROM python:latest
 EXPOSE 5000
 
 WORKDIR /app
