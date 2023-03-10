@@ -176,7 +176,9 @@ def get_args(args=None):
     return parser.parse_args(args=args)
 
 
-def main(args):
+def main(args=None):
+    if args is None:
+        args = get_args()
     debug_level = logging.DEBUG if args.debug else logging.INFO
     logging.basicConfig(level=debug_level)
 
