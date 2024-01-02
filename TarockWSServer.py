@@ -10,6 +10,11 @@ from typing import Optional, Dict
 from tarockgame.game import GameType, Game, IllegalPlay, GameStage, Suit, Card
 from collections import defaultdict, deque
 from random import choice
+from prometheus_client import start_http_server, Summary, Gauge, Counter
+
+
+PYTAROCK_PLAYERS = Gauge(name='pytarock_players', documentation='Number of players connected')
+PYTAROCK_TABLES = Gauge(name='pytarock_tables', documentation='Number of active tables')
 
 logger = logging.getLogger(__name__)
 
@@ -83,11 +88,13 @@ class WSGame:
     async def unregister(self, websocket):
         if websocket.data['table'] is not None:
             await websocket.data['table'].remove(websocket)
+            PYTAROCK_PLAYERS.dec()
         websocket.data['table'] = None
         for tablename in list(self.tables.keys()):
             if not self.tables[tablename]:
                 logger.debug(f'Deleted table "{tablename}"')
                 del self.tables[tablename]
+        PYTAROCK_TABLES.set(len(self.tables))
 
     async def user_exception(self, websocket, msg):
         task = asyncio.create_task(websocket.send(json.dumps({'alertmsg': msg})))
@@ -99,7 +106,9 @@ class WSGame:
             raise IllegalPlay('Table name must not be empty.')
         websocket.data = dict()
         table = self.tables[name]
+        PYTAROCK_TABLES.set(len(self.tables))
         await table.add(websocket)
+        PYTAROCK_PLAYERS.inc()
         logger.debug(f'Current tables: {self.tables.keys()!s}')
 
     async def __call__(self, websocket, path):
@@ -186,7 +195,7 @@ def main(args=None):
 
 
     mygame = WSGame()
-
+    start_http_server(8000)
     start_server = websockets.serve(mygame, args.host, args.port)
 
     asyncio.get_event_loop().run_until_complete(start_server)

@@ -1,13 +1,21 @@
+import time
+
 from .cards import Card, CardCollection, get_full_deck, Suit
 from typing import Optional, List, Tuple, Dict
 from enum import Enum
 import random
 from collections import deque
+from prometheus_client import Summary, Counter
+
+PYTAROCK_GAMES = Summary(name='pytarock_games_seconds', documentation='Finished game lengths')
+PYTAROCK_CARDS_PLAYED = Counter(name='pytarock_cards_played', documentation='Number of cards played')
+PYTAROCK_ILLEGAL_PLAYS = Counter(name='pytarock_illegal_plays', documentation='Number of illegal moves')
 
 
 class IllegalPlay(Exception):
     def __init__(self, msg, *args):
         Exception.__init__(self, msg, *args)
+        PYTAROCK_ILLEGAL_PLAYS.inc()
 
 def _(msg):
     return msg
@@ -61,12 +69,14 @@ class Table:
     center_cards: List[Card]
     talons_uncovered: bool
     move: Optional[int]
+    game_started_timer: Optional[float]
 
     def __init__(self):
         self.center_cards = [None]*4
         self.talons_in_center = [True]*2
         self.talons_uncovered = False
         self.move = None
+        self.game_started_timer = None
 
 
 class Game(Table):
@@ -220,6 +230,7 @@ class Game(Table):
                     self.ausspieler = playerid
                     self.move = playerid
                 self.game_stage = GameStage.INGAME
+                self.game_started_timer = time.monotonic()
                 self.talons_in_center = [False]*2
             else:
                 raise IllegalPlay("It is not your turn.")
@@ -240,12 +251,15 @@ class Game(Table):
             if len([x for x in self.center_cards if x is not None]) == 4:
                 self.finish_play()
             self.is_finished()
+            PYTAROCK_CARDS_PLAYED.inc()
 
     def is_finished(self) -> bool:
         if all([len(p.hand_cards) == 0 for p in self.players]):
             self.move = None
             self.game_stage = GameStage.POSTGAME
             self.calculate_score()
+            if self.game_started_timer is not None:
+                PYTAROCK_GAMES.observe(time.monotonic() - self.game_started_timer)
             return True
         else:
             return False
@@ -374,7 +388,7 @@ class Game(Table):
 
         for i in range(1, 4):
             if self.ouvert and (self.stiche > 1 or
-                                (self.stiche == 1and len([True for x in self.center_cards if x is not None]) in (1, 2, 3))):
+                                (self.stiche == 1 and len([True for x in self.center_cards if x is not None]) in (1, 2, 3))):
                 hand = self.players[(playerid + i) % 4].hand_cards.enc_list()
             else:
                 hand = []
